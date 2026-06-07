@@ -13,7 +13,9 @@ hardcode names, dates, or companies.
 2. **Gather the facts (read-only):** `python3 report.py gather --week N`. This gives
    you, for that week only: the student's commits in the tracked repos (the *only*
    projects to write about), their notes (`notes/week-N.md`), and the text of weeks
-   already written (so you don't repeat them).
+   already written (so you don't repeat them). Use **only** this command for commit
+   data — its window is already limited to the one reporting week. Do not run your
+   own `git log` or pull history beyond that week.
 
 3. **If there is no data** (no commits AND no notes), STOP. Do not invent anything.
    Ask the student what they did that week — meetings, learning, non-code work — or
@@ -55,5 +57,10 @@ should not be able to tell an AI helped.
 
 **Rules of substance:**
 - Only the tracked projects. Never invent tasks, numbers, or feelings.
+- Report only the one week from `status`/`--week`; its commit window is fixed to
+  those 7 days. Don't reach into other weeks' work.
+- If a task continues from a previous week, write only **this week's progress** on
+  it — don't re-describe what an earlier week already covered (you're shown earlier
+  weeks under "do NOT repeat").
 - If a note contradicts the commits, trust the note and mention the mismatch to the student.
 - One week per run; leave other weeks alone.

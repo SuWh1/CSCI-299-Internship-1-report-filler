@@ -22,6 +22,10 @@ python3 report.py fill --week N --content-file .week-draft-N.md
 
 ## The rules that matter
 - **Only** report on the projects in `report.config.json` → `tracking.repos`.
+- **One week only.** Use `report.py gather --week N` for commit data — its window is
+  already fixed to that week's 7 days. Don't run your own `git log` or reach into
+  other weeks. If a task continues from a previous week, write only *this week's*
+  progress (earlier weeks are shown under "do NOT repeat").
 - **Never invent work.** If a week has no commits and no notes, stop and ask the
   student what they did (or have them write `notes/week-N.md`).
 - Write in a **plain student voice** — concrete, first person, no AI clichés
