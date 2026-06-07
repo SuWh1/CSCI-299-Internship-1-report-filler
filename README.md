@@ -36,6 +36,28 @@ Then, each week, tell your AI assistant: **"make this week's internship report."
 
 ---
 
+## 🤖 Works with any AI assistant
+
+The tool itself (`report.py`) is just Python — any assistant that can run shell
+commands drives it the same way. Each assistant auto-reads its own instructions
+file, and they **all point to the same `weekly-report.md`**, so there's one source
+of truth:
+
+| Assistant | File it reads (already included) |
+|---|---|
+| OpenAI Codex, and most agents | `AGENTS.md` |
+| Claude Code | `.claude/skills/weekly-report/` (`/weekly-report`) + `CLAUDE.md` |
+| Cursor | `.cursor/rules/weekly-report.mdc` |
+| GitHub Copilot | `.github/copilot-instructions.md` |
+| Gemini CLI | `GEMINI.md` |
+| Aider / anything else | point it at `weekly-report.md` (e.g. `aider --read weekly-report.md`) |
+
+Just open the project in your assistant and say **"make this week's internship
+report."** (A plain chat bot with no terminal can't run the script — use a coding
+assistant with shell access.)
+
+---
+
 ## ✍️ What to fill in `report.config.json`
 
 | Field | What to put |
@@ -103,7 +125,8 @@ assistant will ask you what you did.
 | `reports/Week-N.docx` | Your generated reports (git-ignored) |
 | `notes/week-N.md` | Your free-form input per week (git-ignored) |
 | `report.py`, `reportlib/` | The tool (stdlib only) |
-| `weekly-report.md` | Instructions + writing style for any AI assistant |
+| `weekly-report.md` | The instructions + writing style — single source of truth |
+| `AGENTS.md`, `CLAUDE.md`, `GEMINI.md`, `.cursor/`, `.github/` | Per-assistant entry points that point to `weekly-report.md` |
 | `.claude/skills/weekly-report/` | `/weekly-report` command for Claude Code |
 | `tests/` | `python3 -m unittest discover -s tests -t .` |
 

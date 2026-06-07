@@ -1,0 +1,18 @@
+---
+description: Generate the university weekly internship report
+alwaysApply: true
+---
+
+This repository fills in a university weekly internship report (a Word `.docx`).
+Follow the shared instructions in [weekly-report.md](../../weekly-report.md) — full
+steps and writing rules — also summarized in [AGENTS.md](../../AGENTS.md).
+
+```bash
+python3 report.py status
+python3 report.py gather --week N
+python3 report.py fill --week N --content-file .week-draft-N.md
+```
+
+Rules: only report on the repos in `report.config.json`; never invent work (no
+commits + no notes → ask the student); plain student voice, no AI clichés; never
+hardcode personal details (they live in `report.config.json`).
