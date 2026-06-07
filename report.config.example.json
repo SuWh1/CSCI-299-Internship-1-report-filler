@@ -1,0 +1,40 @@
+{
+  "_help": "Copy this file to report.config.json and replace every value. See README.md. Nothing here is committed once you rename it — report.config.json is git-ignored.",
+  "student": {
+    "name": "Your Full Name"
+  },
+  "company": {
+    "name": "Your Company",
+    "location": "City, Address"
+  },
+  "position": {
+    "department": "Your Department",
+    "title": "Your Role (e.g. Backend Developer)",
+    "employmentType": "Full-time"
+  },
+  "supervisor": {
+    "name": "Supervisor Name",
+    "position": "Supervisor Title",
+    "email": "supervisor@company.com",
+    "phone": "+0 000 000 0000"
+  },
+  "internship": {
+    "startDate": "YYYY-MM-DD",
+    "endDate": "YYYY-MM-DD"
+  },
+  "report": {
+    "docxFile": "Summer-Internship-Report-Form.docx"
+  },
+  "tracking": {
+    "sessionDataDir": "~/.claude/session-data",
+    "authorFilter": "your-git-username",
+    "repos": [
+      "~/path/to/your/project",
+      "~/path/to/another/project"
+    ]
+  },
+  "style": {
+    "voice": "plain student voice, first person, concrete, no AI clichés",
+    "wordsPerWeek": "150-300"
+  }
+}

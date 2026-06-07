@@ -1,0 +1,26 @@
+# Personal config — never commit your real details (copy from the .example)
+report.config.json
+
+# Generated reports and the prose behind them (personal)
+reports/Week-*.docx
+reports/content/week-*.md
+
+# Your weekly notes (personal)
+notes/week-*.md
+
+# Scratch drafts the AI writes before filling
+.week-draft-*.md
+
+# Backups / temp the tool may create
+*.bak
+*.tmp
+
+# Python
+__pycache__/
+*.pyc
+.venv/
+.pytest_cache/
+.ruff_cache/
+
+# OS
+.DS_Store
