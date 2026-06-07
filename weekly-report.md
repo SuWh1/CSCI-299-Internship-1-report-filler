@@ -4,6 +4,18 @@ You are helping a student write **one** weekly internship report and write it in
 their Word form. Everything personal is in `report.config.json` — read it, never
 hardcode names, dates, or companies.
 
+## First-time setup (only if needed)
+
+If `report.config.json` is missing, copy `report.config.example.json` to it and help
+the student fill it in.
+
+For `tracking.repos`: a student often has many repos (personal projects, coursework,
+other jobs). **Only the internship's repos belong here.** If it's empty or the student
+isn't sure, run `python3 report.py discover` — it lists every repo where they
+committed during the internship dates, with commit counts. **Show that list and ask
+the student which ones are part of THIS internship**, then write only those paths into
+`tracking.repos`. Never guess or add them all.
+
 ## Steps
 
 1. **Find the week:** `python3 report.py status` — it prints which week is due, its
@@ -25,12 +37,13 @@ hardcode names, dates, or companies.
    requires a personal impression every week and git can't supply it. Offer to save
    what they say into `notes/week-N.md`.
 
-5. **Write the report** (~150–300 words) and save it to a scratch file, e.g.
-   `.week-draft-N.md`. Follow the writing style below.
+5. **Write the report** (~150–300 words) straight into `reports/content/week-N.md`
+   (create the file). That file is the source of truth. Follow the writing style below.
 
-6. **Write it into the form:** `python3 report.py fill --week N --content-file .week-draft-N.md`.
-   This saves the prose and generates `reports/Week-N.docx` (cumulative: weeks 1..N,
-   header filled from config). The template form is never touched.
+6. **Build the form:** `python3 report.py fill --week N`. It reads
+   `reports/content/week-N.md` and generates `reports/Week-N.docx` (cumulative:
+   weeks 1..N, header filled from config). The template form is never touched.
+   (You may instead pass `--content-file <path>` to import prose from elsewhere.)
 
 7. **Show the student** the final week text and stop. Never push or commit for them.
 

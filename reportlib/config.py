@@ -59,6 +59,9 @@ def validate_config(cfg: dict) -> bool:
     repos = cfg["tracking"].get("repos")
     if not isinstance(repos, list):
         raise ConfigError("tracking.repos must be a list of paths (it may be empty)")
+    search_dirs = cfg["tracking"].get("searchDirs")
+    if search_dirs is not None and not isinstance(search_dirs, list):
+        raise ConfigError("tracking.searchDirs must be a list of paths")
     return True
 
 

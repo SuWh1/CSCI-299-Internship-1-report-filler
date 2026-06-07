@@ -23,7 +23,7 @@ BASE = os.path.dirname(os.path.abspath(__file__))
 if BASE not in sys.path:
     sys.path.insert(0, BASE)
 
-from reportlib import build, config, contentstore, docxfill, gitlog, notes, weeks  # noqa: E402
+from reportlib import build, config, contentstore, discover, docxfill, gitlog, notes, weeks  # noqa: E402
 
 CONFIG_PATH = os.path.join(BASE, "report.config.json")
 EXAMPLE_PATH = os.path.join(BASE, "report.config.example.json")
@@ -68,6 +68,11 @@ def _ensure_notes_file(n):
 def _repo_label(path):
     parent = os.path.basename(os.path.dirname(path.rstrip("/")))
     return f"{parent}/{os.path.basename(path.rstrip('/'))}" if parent else os.path.basename(path)
+
+
+def _tilde(path):
+    home = os.path.expanduser("~")
+    return "~" + path[len(home):] if path.startswith(home) else path
 
 
 def _target_week(cfg, override):
@@ -174,19 +179,54 @@ def cmd_gather(cfg, args):
     print("\n".join(out))
 
 
+def cmd_discover(cfg, args):
+    search_dirs = [args.dir] if args.dir else (cfg["tracking"].get("searchDirs") or ["~"])
+    author = cfg["tracking"].get("authorFilter") or None
+    since = config.start_date(cfg).isoformat()
+    until = (config.end_date(cfg) + timedelta(days=1)).isoformat()
+    print(f"Scanning {', '.join(search_dirs)} for repos with your commits "
+          f"({since}..{until}, author: {author or 'all'}) — this can take a moment…")
+
+    rows = []
+    for repo in discover.find_git_repos([config.expand_path(d) for d in search_dirs]):
+        commits, _err = gitlog.run_log(repo, since, until, author=author)
+        if commits:
+            rows.append((len(commits), repo))
+    rows.sort(reverse=True)
+
+    if not rows:
+        print("\nNo repositories with matching commits found.")
+        print("  • Check tracking.authorFilter — yours is likely `git config user.name`.")
+        print("  • Or point the scan at where your code lives: --dir ~/path  (or set tracking.searchDirs).")
+        return 0
+
+    print(f"\nFound {len(rows)} repo(s) where you committed during the internship:\n")
+    for count, repo in rows:
+        print(f"  {count:4d} commits  {_tilde(repo)}")
+    print("\nWhich of these belong to THIS internship? Add only those paths to")
+    print('tracking.repos in report.config.json — leave out personal or other-job projects.')
+    return 0
+
+
 def cmd_fill(cfg, args):
     n = args.week or _target_week(cfg, None)
-    try:
-        with open(args.content_file, encoding="utf-8") as f:
-            paragraphs = contentstore.split_paragraphs(f.read())
-    except FileNotFoundError:
-        print(f"ERROR: content file not found: {args.content_file}", file=sys.stderr)
-        return 1
-    if not paragraphs:
-        print("ERROR: content file is empty", file=sys.stderr)
-        return 1
-
-    contentstore.write_content(CONTENT_DIR, n, paragraphs)
+    if args.content_file:
+        try:
+            with open(args.content_file, encoding="utf-8") as f:
+                paragraphs = contentstore.split_paragraphs(f.read())
+        except FileNotFoundError:
+            print(f"ERROR: content file not found: {args.content_file}", file=sys.stderr)
+            return 1
+        if not paragraphs:
+            print("ERROR: content file is empty", file=sys.stderr)
+            return 1
+        contentstore.write_content(CONTENT_DIR, n, paragraphs)
+    else:
+        paragraphs = contentstore.read_content(CONTENT_DIR, n)
+        if not paragraphs:
+            print(f"ERROR: no prose for week {n}. Write reports/content/week-{n}.md "
+                  f"first, or pass --content-file.", file=sys.stderr)
+            return 1
     # Rebuild every weekly file so all cumulative reports stay consistent.
     built = build.build_all(_template_path(cfg), cfg, CONTENT_DIR, REPORTS_DIR)
     out = _report_path(n)
@@ -235,8 +275,10 @@ def main(argv=None):
         p.add_argument("--week", type=int, default=None)
     p_fill = sub.add_parser("fill")
     p_fill.add_argument("--week", type=int, default=None)
-    p_fill.add_argument("--content-file", required=True)
+    p_fill.add_argument("--content-file", default=None)  # optional: else read reports/content/week-N.md
     sub.add_parser("rebuild")
+    p_disc = sub.add_parser("discover")
+    p_disc.add_argument("--dir", default=None, help="directory to scan (overrides config searchDirs)")
     args = parser.parse_args(argv)
 
     if not os.path.exists(CONFIG_PATH):
@@ -261,6 +303,8 @@ def main(argv=None):
             return cmd_fill(cfg, args) or 0
         if args.command == "rebuild":
             return cmd_rebuild(cfg, args) or 0
+        if args.command == "discover":
+            return cmd_discover(cfg, args) or 0
     except (ValueError, OSError) as exc:  # malformed/missing template or file-system issue
         print(f"Error: {exc}", file=sys.stderr)
         return 1

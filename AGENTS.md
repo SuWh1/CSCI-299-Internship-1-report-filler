@@ -7,18 +7,22 @@ live in **[weekly-report.md](weekly-report.md)** — read it before writing a re
 
 ## Setup (first time)
 If `report.config.json` is missing, copy `report.config.example.json` to it and
-fill in the student's details. Everything personal is in that file — never
-hardcode names, companies, or dates.
+fill in the student's details (never hardcode them elsewhere). For `tracking.repos`,
+the student may have many repos but only the internship's belong there — if it's
+empty or unclear, run `python3 report.py discover` to list repos where they
+committed during the internship, **show the list, and ask which are this
+internship's** before writing those paths to the config. Never add them all.
 
 ## Generating one week's report
 ```bash
 python3 report.py status            # which week is due + its dates
 python3 report.py gather --week N   # that week's commits + notes + prior weeks
-# …write the prose to a file, e.g. .week-draft-N.md…
-python3 report.py fill --week N --content-file .week-draft-N.md
+# …write the prose into reports/content/week-N.md…
+python3 report.py fill --week N     # builds reports/Week-N.docx from that file
 ```
-`fill` saves the prose and generates the cumulative `reports/Week-N.docx`
-(Weeks 1..N, header filled). The template form is never modified.
+`fill` generates the cumulative `reports/Week-N.docx` (Weeks 1..N, header filled)
+from `reports/content/week-N.md`. The template form is never modified. (You may
+also pass `--content-file <path>` to import prose from elsewhere.)
 
 ## The rules that matter
 - **Only** report on the projects in `report.config.json` → `tracking.repos`.

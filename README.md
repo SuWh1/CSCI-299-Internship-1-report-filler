@@ -68,8 +68,9 @@ assistant with shell access.)
 | `supervisor.name` / `position` / `email` / `phone` | Your supervisor's details (the form requires email **and** phone) |
 | `internship.startDate` / `endDate` | `YYYY-MM-DD`. Weeks are counted from the start date |
 | `report.docxFile` | The filename of your university Word form (kept in this folder) |
-| `tracking.repos` | Folders of the projects to report on — **only these are read**. Leave `[]` if your internship isn't coding |
+| `tracking.repos` | Folders of the projects to report on — **only these are read**. Leave `[]` if your internship isn't coding. Not sure which? Run `python3 report.py discover` and it lists the repos you committed to, then pick the internship ones |
 | `tracking.authorFilter` | Your git author name, so only **your** commits count. Find it with `git config user.name`. Leave `""` to include everyone |
+| `tracking.searchDirs` *(optional)* | Where `discover` looks for your repos (default: your home folder). Narrow it (e.g. `["~/code"]`) to scan faster |
 
 ---
 
@@ -78,13 +79,15 @@ assistant with shell access.)
 Your AI assistant runs these for you, but you can run them yourself too:
 
 ```bash
+python3 report.py discover          # find which repos you committed to (for setup)
 python3 report.py status            # which week is due + its dates
 python3 report.py gather --week N   # your commits + your notes + earlier weeks
-python3 report.py fill   --week N --content-file <draft>   # generate the .docx
+python3 report.py fill   --week N   # build the .docx from reports/content/week-N.md
 python3 report.py rebuild           # regenerate all weeks (after editing an old one)
 ```
 
-Output lands in **`reports/Week-N.docx`** — a *cumulative* file (Weeks 1..N all filled,
+The report prose for each week lives in **`reports/content/week-N.md`** (your AI
+writes it there). Output lands in **`reports/Week-N.docx`** — a *cumulative* file (Weeks 1..N all filled,
 header included), so the newest file is always your complete, submittable form. The
 template at the repo root is never modified.
 

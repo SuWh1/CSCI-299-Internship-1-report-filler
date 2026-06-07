@@ -28,6 +28,7 @@
   "tracking": {
     "sessionDataDir": "~/.claude/session-data",
     "authorFilter": "your-git-username",
+    "searchDirs": ["~"],
     "repos": [
       "~/path/to/your/project",
       "~/path/to/another/project"

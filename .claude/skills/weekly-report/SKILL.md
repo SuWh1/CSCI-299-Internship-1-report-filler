@@ -17,7 +17,10 @@ the prose. The template form at the repo root is never modified.
 ## First run / setup
 If `report.config.json` is missing or `python3 report.py status` says it still has
 placeholders, help the student fill it (copy `report.config.example.json`, set
-name/company/supervisor/dates/repos) before doing anything else.
+name/company/supervisor/dates) before doing anything else. For `tracking.repos`, if
+it's empty or unclear, run `python3 report.py discover`, show the listed repos, and
+**ask the student which belong to this internship** (exclude personal/other work)
+before writing those paths to the config — never add them all.
 
 ## Workflow
 1. `python3 report.py status` — find the week due and its dates.
@@ -27,9 +30,9 @@ name/company/supervisor/dates/repos) before doing anything else.
 4. Ask for a personal impression if the notes lack one (the form requires it).
 5. Write ~150–300 words in a **plain student voice** (see `weekly-report.md` —
    concrete work first, no AI clichés, no company/role boilerplate, don't list
-   commits, don't repeat earlier weeks). Save to `.week-draft-N.md`.
-6. `python3 report.py fill --week N --content-file .week-draft-N.md` — saves the
-   prose and generates the cumulative `reports/Week-N.docx`.
+   commits, don't repeat earlier weeks) into `reports/content/week-N.md`.
+6. `python3 report.py fill --week N` — builds the cumulative `reports/Week-N.docx`
+   from `reports/content/week-N.md`.
 7. Show the student the final text. Don't push or commit.
 
 ## Guardrails

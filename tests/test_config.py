@@ -52,6 +52,17 @@ class TestConfig(unittest.TestCase):
         with self.assertRaises(config.ConfigError):
             config.validate_config(bad)
 
+    def test_should_accept_optional_search_dirs_list(self):
+        cfg = _valid_config()
+        cfg["tracking"]["searchDirs"] = ["~/code", "~/work"]
+        self.assertTrue(config.validate_config(cfg))
+
+    def test_should_raise_when_search_dirs_is_not_a_list(self):
+        bad = _valid_config()
+        bad["tracking"]["searchDirs"] = "~/code"
+        with self.assertRaises(config.ConfigError):
+            config.validate_config(bad)
+
     def test_should_flag_unfilled_placeholder_config(self):
         placeholder = _valid_config()
         placeholder["student"]["name"] = "Your Full Name"
